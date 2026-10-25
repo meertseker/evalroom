@@ -5,8 +5,7 @@
  * @module
  */
 
-import { appendFile, mkdir, readFile } from "node:fs/promises";
-import { dirname } from "node:path";
+import { appendJsonl, readJsonl } from "./store/jsonl";
 
 /** One immutable audit record. */
 export interface AuditEvent {
@@ -86,23 +85,12 @@ export class JsonlAuditSink implements AuditSink {
 
   /** @inheritdoc */
   async append(event: AuditEvent): Promise<void> {
-    await mkdir(dirname(this.path), { recursive: true });
-    await appendFile(this.path, `${JSON.stringify(event)}\n`, "utf8");
+    await appendJsonl(this.path, [event]);
   }
 
   /** @inheritdoc */
   async list(filter: AuditFilter = {}): Promise<AuditEvent[]> {
-    let text: string;
-    try {
-      text = await readFile(this.path, "utf8");
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
-      throw error;
-    }
-    return text
-      .split(/\r?\n/)
-      .filter((line) => line.trim() !== "")
-      .map((line) => JSON.parse(line) as AuditEvent)
-      .filter((event) => matches(event, filter));
+    const events = (await readJsonl(this.path, { missingOk: true })) as AuditEvent[];
+    return events.filter((event) => matches(event, filter));
   }
 }
