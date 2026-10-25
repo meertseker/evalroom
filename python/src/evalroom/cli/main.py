@@ -85,6 +85,10 @@ class UsageError(Exception):
     """A bad command line: exit 64 with the usage text."""
 
 
+class MissingExtra(UsageError):
+    """An optional extra is not installed: exit 64 with an install hint (no usage text)."""
+
+
 class DataError(Exception):
     """A missing or malformed input file: exit 65."""
 
@@ -292,6 +296,9 @@ def main(argv: Sequence[str] | None = None, io: CliIO | None = None) -> int:
             io.stdout(USAGE)
             return EXIT.usage if command is None else EXIT.ok
         raise UsageError(f'unknown command "{command}"')
+    except MissingExtra as error:
+        io.stderr(f"{c.red('error:')} {error}\n")
+        return EXIT.usage
     except UsageError as error:
         io.stderr(f"{c.red('error:')} {error}\n\n{USAGE}")
         return EXIT.usage
@@ -813,7 +820,7 @@ def _inspect_cli() -> Any:
     try:
         from ..inspect import _cli as inspect_cli  # noqa: PLC0415 - optional extra
     except ImportError as error:
-        raise UsageError(
+        raise MissingExtra(
             "reading Inspect logs needs the Inspect extra: install evalroom[inspect] "
             '(pip install "evalroom[inspect]"; Python 3.11+)'
         ) from error

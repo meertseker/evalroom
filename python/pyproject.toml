@@ -71,7 +71,7 @@ build-backend = "hatchling.build"
 packages = ["src/evalroom"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/evalroom", "tests", "README.md", "LICENSE", "pyproject.toml"]
+include = ["src/evalroom", "README.md", "LICENSE", "pyproject.toml"]
 
 [tool.ruff]
 line-length = 100
