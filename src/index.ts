@@ -17,5 +17,6 @@ export * from "./review";
 export * from "./rubric";
 export * from "./rules";
 export * from "./stats";
+export * from "./store/jsonl";
 export * from "./store/memory";
 export * from "./store/types";
