@@ -8,7 +8,10 @@
 export const VERSION = "0.1.0";
 
 export * from "./agreement";
+export * from "./audit";
+export * from "./golden";
 export * from "./result";
 export * from "./review";
 export * from "./rubric";
+export * from "./rules";
 export * from "./stats";
