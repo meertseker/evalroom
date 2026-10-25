@@ -1,0 +1,69 @@
+{
+  "version": "2026-10.1",
+  "lenses": ["accuracy", "tone", "policy"],
+  "errorClasses": [
+    {
+      "code": "WRONG_FACT",
+      "label": "Wrong fact",
+      "lenses": ["accuracy"],
+      "include": "The reply states something about the order, account or product that contradicts the context (status, date, amount, spec).",
+      "exclude": "A fact that is missing rather than wrong is MISSED_QUESTION. A wrong policy term is POLICY_MISQUOTE.",
+      "goodExample": "Context says 'packing, not yet dispatched'; reply says the order is being packed and will ship soon.",
+      "badExample": "Context says 'packing, not yet dispatched'; reply says the order shipped this morning."
+    },
+    {
+      "code": "MISSED_QUESTION",
+      "label": "Missed question",
+      "lenses": ["accuracy"],
+      "include": "The customer asked something the reply does not answer or act on.",
+      "exclude": "A question answered incorrectly is WRONG_FACT. Declining politely with a reason counts as an answer.",
+      "goodExample": "Customer asks about a missing lid and dishwasher safety; reply handles both.",
+      "badExample": "Customer asks about a missing lid and dishwasher safety; reply only covers the dishwasher."
+    },
+    {
+      "code": "POLICY_MISQUOTE",
+      "label": "Policy misquoted",
+      "lenses": ["accuracy", "policy"],
+      "include": "The reply states a policy term (return window, refund timing, warranty scope) that differs from the published policy.",
+      "exclude": "A promise beyond what policy allows, without misquoting it, is UNSUPPORTED_PROMISE.",
+      "goodExample": "Our return window is 30 days from delivery.",
+      "badExample": "Our return window is 60 days, so you can still send it back."
+    },
+    {
+      "code": "UNSUPPORTED_PROMISE",
+      "label": "Unsupported promise",
+      "lenses": ["policy"],
+      "include": "The reply commits to an outcome or date the agent cannot guarantee: next-day refunds, exact delivery dates, compensation not in policy.",
+      "exclude": "Quoting the standard 5-7 business days is fine. A wrong policy term is POLICY_MISQUOTE.",
+      "goodExample": "Refunds usually take 5-7 business days to appear.",
+      "badExample": "Don't worry, it will be in your account tomorrow."
+    },
+    {
+      "code": "SENSITIVE_DATA",
+      "label": "Sensitive data requested or exposed",
+      "lenses": ["policy"],
+      "include": "The reply asks for or reveals full card numbers, expiry dates, CVVs, passwords or another customer's details.",
+      "exclude": "Asking for an order number or the last four digits of a card is allowed.",
+      "goodExample": "Could you share the last four digits of the card you used?",
+      "badExample": "Please reply with the full card number and expiry date."
+    },
+    {
+      "code": "DISMISSIVE_TONE",
+      "label": "Dismissive tone",
+      "lenses": ["tone"],
+      "include": "The reply brushes the customer off, blames them, or ignores obvious frustration.",
+      "exclude": "A firm, polite refusal with a reason is not dismissive. Template-sounding but warm replies are BOILERPLATE.",
+      "goodExample": "I'm sorry it's late. The parcel is held at the regional hub; here's the tracking link and what happens next.",
+      "badExample": "As stated in the tracking, the parcel is in transit. Please wait."
+    },
+    {
+      "code": "BOILERPLATE",
+      "label": "Boilerplate",
+      "lenses": ["tone"],
+      "include": "Generic template phrasing that ignores the customer's name or situation ('Dear customer', 'We value your feedback').",
+      "exclude": "A standard sign-off on an otherwise personal reply is fine.",
+      "goodExample": "Hi Ama, happy to. I've added a gift receipt to your order.",
+      "badExample": "Dear customer, thank you for contacting us. We value your feedback."
+    }
+  ]
+}
