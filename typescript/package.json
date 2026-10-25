@@ -61,6 +61,7 @@
     "test:watch": "vitest",
     "example": "tsx examples/support-replies/run.ts",
     "example:build": "tsx examples/support-replies/build.ts",
+    "conformance:generate": "tsx scripts/conformance-generate.ts",
     "prepublishOnly": "npm run lint && npm run typecheck && npm test && npm run build"
   },
   "devDependencies": {
