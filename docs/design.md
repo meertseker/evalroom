@@ -6,7 +6,8 @@ A small, dependency-free core for the _human_ side of LLM evaluation: is the new
 
 ## Hard rules
 
-- TypeScript, strict, ESM + CJS build with types. Node >= 20. Zero runtime dependencies.
+- Two implementations with one behaviour: TypeScript (strict, ESM + CJS build with types, Node >= 20) in `typescript/` and Python (3.10+, `mypy --strict`, `py.typed`) in `python/`. Zero runtime dependencies in either core; the Python extras (`inspect`, `pandas`) are optional.
+- Same files, same numbers: on-disk formats use the same camelCase JSON in both languages, and `conformance/` holds vectors both test suites must reproduce.
 - No database. Pure functions over plain data, plus `EvalStore` / `CalibrationStore` interfaces with in-memory and JSONL implementations.
 - Neutral vocabulary only: item, output, reviewer, lens, tenant.
 - Every rate the library returns carries its interval and n. No function returns a bare percentage ([ADR 0002](adr/0002-no-bare-rates.md)).
@@ -72,4 +73,48 @@ evalroom was extracted from a control room that ran in production at Revint, gra
 16. **The root entry point exports the JSONL store and sink**, which import `node:fs`. That keeps one import path for v0.1 at the cost of browser bundling; a browser-safe entry is on the roadmap.
 17. **`formatRate(0, 0)` prints `"no data · not decidable"`.**
 18. **The example's Fleiss' kappa is low (0.06) and was not tuned upwards**: its lenses grade different aspects, which is exactly the caveat documented in [statistics.md](statistics.md).
-19. **Commit trailer.** Commits carry the `Co-Authored-By` trailer specified for this build.
+
+## Python package and Inspect extension
+
+### Layout
+
+| Path | Contents |
+| --- | --- |
+| `typescript/` | The npm package (moved here with its history), its tests, the support-replies example scripts and `scripts/conformance*.ts` |
+| `python/` | The PyPI package: `src/evalroom/` (core, `cli/`, `store/`, `inspect/`, `pandas.py`), `tests/`, `examples/inspect_judge/`, `uv.lock` |
+| `conformance/` | Shared vectors (`*.json`, `cli/cases.json`) and the shared dataset (`data/`) |
+| `docs/` | Shared documentation |
+
+| Python module | Responsibility |
+| --- | --- |
+| `stats`, `rubric`, `review`, `agreement`, `rules`, `golden`, `evalrun`, `calibration`, `audit`, `store` | Ports of the TypeScript modules, snake_case names, same semantics |
+| `_serde` | snake_case dataclasses to and from the camelCase file format, in one place |
+| `_js` | JavaScript-compatible number and JSON formatting (`Math.round`, `toFixed`, `String(number)`, `JSON.stringify`) |
+| `jsonl` | JSONL helpers (kept out of `store/` so the audit sink can use them without an import cycle) |
+| `cli/` | argparse CLI with the TypeScript commands plus `judge-check` |
+| `inspect/` | `judge_check`, `gate_log`, `compare_logs`, `wilson_accuracy`, the entry-point registry |
+| `pandas` | `to_dataframe()` |
+
+### Decisions
+
+20. **Python 3.10+ for the core, 3.11+ for the Inspect extra.** inspect_ai 0.3.285 requires Python 3.11, so the `inspect` extra carries a `python_version >= '3.11'` marker. On 3.10 the core and CLI work and the Inspect commands exit 64 with an install hint; the Inspect tests are skipped there. The extra pins `inspect_ai>=0.3.285`, the version the extension was built and tested against.
+21. **Stores and audit sinks are synchronous in Python.** The TypeScript ones are async so a database implementation fits; in Python a synchronous protocol is the idiomatic default and an async store can wrap it.
+22. **Result values are `Ok` / `Err` dataclasses** (narrow with `isinstance`) so refusals still list every reason; `define_rubric` raises `RubricError` (a `ValueError`) and gate errors are `ValueError`, where TypeScript throws `RangeError`.
+23. **`MISSING` stands for JavaScript's `undefined`** where absence and `null` differ: a rule without a value, an item without an input, a key absent from a diffed object.
+24. **Printed numbers follow JavaScript.** Rates, kappa (`toFixed(2)`), interval widths and failure details are formatted by `_js` so both CLIs print identical strings; `evalroom score` writes the same result lines in both.
+25. **Regular expressions are compiled by each language's engine.** Patterns in the common subset behave the same; flags `i`, `m`, `s` are honoured in Python, `g`, `y`, `u`, `d`, `v` accepted and ignored. Conformance compares regex syntax-error messages by prefix only, because the engines word them differently.
+26. **Text normalisation approximates `\p{Diacritic}`** with Unicode combining marks plus modifier symbols (`Mn`, `Sk`); `\p{L}\p{N}` with the `L*`/`N*` categories. Identical on every conformance vector; exotic characters may differ.
+27. **`snapshot()` returns a sorted deep copy, not a frozen one**: Python cannot freeze a dict without changing its type.
+28. **Conformance vectors are generated from TypeScript** and reference files in `conformance/data` instead of inlining them, to keep the vectors small. Python matched TypeScript on every vector at the first run; no implementation had to be corrected against the published values.
+
+### Inspect extension
+
+29. **Human truth from `Score.history`.** A score is reviewed when its history holds an entry with provenance. The judge's label is `history[0].value` (the snapshot Inspect takes before the first edit, provenance `None`), the human label is the current value, and the last provenance entry supplies the reviewer and reason. An edit that keeps the value is a confirmation. `"UNCHANGED"` (Inspect's not-set marker, which nulls also read back as) is treated as absent. See [inspect-log-format.md](inspect-log-format.md).
+30. **Unedited samples are excluded by default.** `--assume-unedited-agree` counts them as agreements; it is opt-in and printed as a warning, because an unopened sample is not evidence.
+31. **A labels file replaces the edits** and defines the reviewed set. `epoch` may be omitted unless the sample has several epochs (then the row is ambiguous and refused). Rows matching no sample are counted and reported.
+32. **One decision rule everywhere.** `judge-check` uses the core gate's rule on the agreement interval (`evalrun.decide`): undecidable below `--min-n`, above `--max-width`, or when the point estimate clears `--min-agreement` but the lower bound does not. Exit codes 0/1/2 map to acceptable / not acceptable / undecidable.
+33. **Partial credit** (`P`, or a number strictly between 0 and 1) counts as incorrect by default (`--partial fail`), configurable to `pass` or `exclude`, in `judge-check`, `gate`, `compare` and the metric.
+34. **`wilson_accuracy` returns `{"wilson_accuracy", "lower", "upper", "decidable", "n"}`.** Inspect flattens dict metrics into the scorer's metric list; a key named `accuracy` collided with the built-in `accuracy()` and was renamed `accuracy2`, so the point estimate has a prefixed key. `decidable` is 1.0 or 0.0 so it renders like the other metric values.
+35. **The CLI detects Inspect logs** by the `.eval` extension or by a `.json` file whose head looks like an Inspect log; anything else is read as an evalroom run file. Run files keep the existing behaviour, and Inspect-only flags (`--scorer`, `--partial`, `--threshold`) on a run file are a usage error. `--threshold` is the Inspect-side name of `--min-pass`; both are accepted on logs.
+36. **Cases from a log** are sample ids (`id#epoch` when the log has several epochs); failing cases carry the score value as their code and an excerpt of the scorer's explanation as their detail.
+37. **The example fixture is generated, deterministic in content and committed** (`make_fixture.py`, seed 2026). Its grades and labels never change between runs; Inspect's own ids and timestamps inside the log do. It is about 240 KiB, kept as Inspect wrote it (events and grading transcripts included) so it stays a faithful example.

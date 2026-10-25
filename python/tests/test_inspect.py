@@ -384,6 +384,7 @@ def test_cli_judge_check_json_and_flags() -> None:
         == EXIT.usage
     )
     assert cli(["judge-check"])[0] == EXIT.usage
+    assert cli(["judge-check", "a.eval", "b.eval"])[0] == EXIT.usage
     assert cli(["judge-check", "missing.eval"])[0] == EXIT.data
 
 

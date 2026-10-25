@@ -117,6 +117,8 @@ def judge_check_command(args: Sequence[str], io: CliIO, c: Colors) -> int:
         io.stdout(USAGE)
         return EXIT.ok
     path = need(parsed.positionals[0] if parsed.positionals else None, "<log.eval>")
+    if len(parsed.positionals) > 1:
+        raise UsageError("judge-check reads one log; run it once per log")
     min_agreement = num(parsed.get("--min-agreement"), "--min-agreement", DEFAULT_MIN_AGREEMENT)
     if not 0 <= min_agreement <= 1:
         raise UsageError("--min-agreement must be between 0 and 1")

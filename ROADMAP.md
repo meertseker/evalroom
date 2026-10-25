@@ -8,6 +8,8 @@ Plans, not promises. Open an issue before starting on any of these so we can agr
 - **Kappa intervals.** Bootstrap confidence intervals for Fleiss' and Cohen's kappa, so kappa follows the same "no bare numbers" rule as rates.
 - **Paired comparison.** McNemar's test (exact for small n) on the broken/fixed partition, to say whether a candidate is better than its base rather than only whether it clears a bar.
 - **Browser-safe entry point.** `evalroom/core` without `node:fs`, so the statistics run in a review UI.
+- **Judge checks per slice.** `judge-check --by <metadata field>`: agreement per category, with the multiple-comparison caveat, because a judge can be fine overall and bad on one kind of question.
+- **Review sampling.** A helper that picks a seeded random sample of an Inspect log for review, so the measured agreement is not biased towards suspicious grades.
 
 ## Later
 
@@ -20,4 +22,4 @@ Plans, not promises. Open an issue before starting on any of these so we can agr
 ## Not planned
 
 - A hosted service, dashboard or database. See [ADR 0001](docs/adr/0001-no-database.md).
-- LLM-as-judge scoring. Use a tool built for it and feed its outputs to `score`.
+- LLM-as-judge scoring. evalroom measures judges, it does not run them: use Inspect (or another tool built for it) and point `judge-check` at the log.
