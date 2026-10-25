@@ -1,0 +1,41 @@
+[
+  {
+    "path": "reply",
+    "op": "notContains",
+    "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+    "code": "FORBIDDEN_PHRASE"
+  },
+  {
+    "path": "actions",
+    "op": "subsetOf",
+    "value": [
+      "refund_status_shared",
+      "return_label_sent",
+      "replacement_ordered",
+      "tracking_shared",
+      "password_reset_sent",
+      "account_unlocked",
+      "subscription_cancelled",
+      "escalated_to_tier2"
+    ],
+    "code": "UNKNOWN_ACTION"
+  },
+  {
+    "path": "reply",
+    "op": "matches",
+    "value": "^Hi [A-Z]",
+    "code": "GREETING"
+  },
+  {
+    "path": "reply",
+    "op": "contains",
+    "value": ["£64.00", "business days"],
+    "code": "REFUND_FACTS"
+  },
+  {
+    "path": "escalate",
+    "op": "eq",
+    "value": false,
+    "code": "NO_ESCALATION"
+  }
+]
