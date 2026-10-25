@@ -12,7 +12,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from helpers import CONFORMANCE, DATA
 
 from evalroom._serde import MISSING, to_json
 from evalroom.agreement import agreement_report
@@ -42,6 +41,7 @@ from evalroom.stats import (
     median,
     wilson,
 )
+from helpers import CONFORMANCE, DATA
 
 Case = dict[str, Any]
 
@@ -68,7 +68,7 @@ def same(actual: Any, expected: Any, tolerance: float, path: str, ignore: list[s
         )
     if isinstance(expected, list):
         if not isinstance(actual, list) or len(actual) != len(expected):
-            return f"{path}: list length {len(actual) if isinstance(actual, list) else '-'} != {len(expected)}"
+            return f"{path}: list lengths differ ({actual!r:.60} vs {len(expected)} items)"
         for i, (a, e) in enumerate(zip(actual, expected, strict=True)):
             problem = same(a, e, tolerance, f"{path}[{i}]", ignore)
             if problem:
