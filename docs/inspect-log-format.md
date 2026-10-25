@@ -45,6 +45,6 @@ edit_score(log, sample_id, "model_graded_qa",
 
 ## Metrics
 
-Inspect metrics are `@metric` factories returning `Metric = Callable[[list[SampleScore]], Value]`, where `Value` includes `Mapping[str, str | int | float | bool | None]`. A metric may therefore return a dict of floats; `wilson_accuracy` returns `{"accuracy", "lower", "upper", "decidable", "n"}`. Inspect's own `value_to_float()` maps `C` to 1, `P` to 0.5, `I` and `N` to 0, `yes`/`true` to 1, `no`/`false` to 0, and numeric strings to their value.
+Inspect metrics are `@metric` factories returning `Metric = Callable[[list[SampleScore]], Value]`, where `Value` includes `Mapping[str, str | int | float | bool | None]`. A metric may therefore return a dict of floats; `wilson_accuracy` returns `{"wilson_accuracy", "lower", "upper", "decidable", "n"}`. Inspect flattens a dict metric into the scorer's metric list, so a key named `accuracy` would collide with the built-in `accuracy()` and be renamed `accuracy2` (observed); hence the prefixed key. Inspect's own `value_to_float()` maps `C` to 1, `P` to 0.5, `I` and `N` to 0, `yes`/`true` to 1, `no`/`false` to 0, and numeric strings to their value.
 
 Extension packages register through the `inspect_ai` entry-point group. Inspect loads them lazily on a registry lookup, and names objects from a package as `<package>/<name>`, so the metric is `evalroom/wilson_accuracy`.
