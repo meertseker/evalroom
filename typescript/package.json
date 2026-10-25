@@ -16,10 +16,11 @@
   ],
   "license": "MIT",
   "author": "Mert Seker <meertseker@gmail.com>",
-  "homepage": "https://github.com/meertseker/evalroom#readme",
+  "homepage": "https://github.com/meertseker/evalroom/tree/main/typescript#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/meertseker/evalroom.git"
+    "url": "git+https://github.com/meertseker/evalroom.git",
+    "directory": "typescript"
   },
   "bugs": {
     "url": "https://github.com/meertseker/evalroom/issues"
