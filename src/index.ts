@@ -7,4 +7,7 @@
 /** Library version. */
 export const VERSION = "0.1.0";
 
+export * from "./result";
+export * from "./review";
+export * from "./rubric";
 export * from "./stats";
