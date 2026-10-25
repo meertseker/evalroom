@@ -1,0 +1,36 @@
+name: Bug report
+description: Something computes or behaves incorrectly
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Include the command or code you ran and its output.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: For a statistics bug, include the value you expected and where it comes from (paper, textbook, other software).
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: The smallest reviews / run / rubric data that shows the problem.
+      render: ts
+  - type: input
+    id: version
+    attributes:
+      label: evalroom version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node version and OS
+      placeholder: "Node 22.11, Ubuntu 24.04"
