@@ -14,10 +14,20 @@ import {
   validateReview,
 } from "../../src/index";
 
-/** Directory of this example. */
-export const here = dirname(fileURLToPath(import.meta.url));
+/**
+ * Directory holding this example's data. The data is shared with the Python package and the
+ * conformance tests, so it lives in `conformance/data` at the repository root.
+ */
+export const here = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "..",
+  "..",
+  "conformance",
+  "data",
+);
 
-/** Path of a file in this example. */
+/** Path of a data file of this example. */
 export function file(name: string): string {
   return join(here, name);
 }

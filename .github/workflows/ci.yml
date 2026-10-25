@@ -33,4 +33,4 @@ jobs:
       - run: npm run build
       - run: npm run example
       - name: CLI smoke test on the built binary
-        run: node dist/cli/index.js agreement examples/support-replies/reviews.jsonl --rubric examples/support-replies/rubric.json
+        run: node dist/cli/index.js agreement ../conformance/data/reviews.jsonl --rubric ../conformance/data/rubric.json

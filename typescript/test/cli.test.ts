@@ -9,7 +9,7 @@ import { stripAnsi, table, visibleLength } from "../src/cli/format";
 import { type CliIO, EXIT, main } from "../src/cli/main";
 
 const root = resolve(import.meta.dirname, "..");
-const example = join(root, "examples", "support-replies");
+const example = join(root, "..", "conformance", "data");
 const run = promisify(execFile);
 const tsxCli = createRequire(import.meta.url).resolve("tsx/cli");
 
