@@ -1,0 +1,442 @@
+{
+  "t-01": [
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+      "code": "FORBIDDEN_PHRASE"
+    },
+    {
+      "path": "actions",
+      "op": "subsetOf",
+      "value": [
+        "refund_status_shared",
+        "return_label_sent",
+        "replacement_ordered",
+        "tracking_shared",
+        "password_reset_sent",
+        "account_unlocked",
+        "subscription_cancelled",
+        "escalated_to_tier2"
+      ],
+      "code": "UNKNOWN_ACTION"
+    },
+    {
+      "path": "reply",
+      "op": "matches",
+      "value": "^Hi [A-Z]",
+      "code": "GREETING"
+    },
+    {
+      "path": "reply",
+      "op": "contains",
+      "value": ["£64.00", "business days"],
+      "code": "REFUND_FACTS"
+    },
+    {
+      "path": "escalate",
+      "op": "eq",
+      "value": false,
+      "code": "NO_ESCALATION"
+    }
+  ],
+  "t-02": [
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+      "code": "FORBIDDEN_PHRASE"
+    },
+    {
+      "path": "actions",
+      "op": "subsetOf",
+      "value": [
+        "refund_status_shared",
+        "return_label_sent",
+        "replacement_ordered",
+        "tracking_shared",
+        "password_reset_sent",
+        "account_unlocked",
+        "subscription_cancelled",
+        "escalated_to_tier2"
+      ],
+      "code": "UNKNOWN_ACTION"
+    },
+    {
+      "path": "reply",
+      "op": "matches",
+      "value": "^Hi [A-Z]",
+      "code": "GREETING"
+    },
+    {
+      "path": "actions",
+      "op": "contains",
+      "value": "return_label_sent",
+      "code": "LABEL_SENT"
+    },
+    {
+      "path": "reply",
+      "op": "contains",
+      "value": "30-day",
+      "code": "WINDOW_30"
+    },
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": "60-day",
+      "code": "WINDOW_30"
+    }
+  ],
+  "t-04": [
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+      "code": "FORBIDDEN_PHRASE"
+    },
+    {
+      "path": "actions",
+      "op": "subsetOf",
+      "value": [
+        "refund_status_shared",
+        "return_label_sent",
+        "replacement_ordered",
+        "tracking_shared",
+        "password_reset_sent",
+        "account_unlocked",
+        "subscription_cancelled",
+        "escalated_to_tier2"
+      ],
+      "code": "UNKNOWN_ACTION"
+    },
+    {
+      "path": "reply",
+      "op": "matches",
+      "value": "^Hi [A-Z]",
+      "code": "GREETING"
+    },
+    {
+      "path": "actions",
+      "op": "eq",
+      "value": ["password_reset_sent"],
+      "code": "RESET_ONLY"
+    }
+  ],
+  "t-06": [
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+      "code": "FORBIDDEN_PHRASE"
+    },
+    {
+      "path": "actions",
+      "op": "subsetOf",
+      "value": [
+        "refund_status_shared",
+        "return_label_sent",
+        "replacement_ordered",
+        "tracking_shared",
+        "password_reset_sent",
+        "account_unlocked",
+        "subscription_cancelled",
+        "escalated_to_tier2"
+      ],
+      "code": "UNKNOWN_ACTION"
+    },
+    {
+      "path": "reply",
+      "op": "matches",
+      "value": "^Hi [A-Z]",
+      "code": "GREETING"
+    },
+    {
+      "path": "actions",
+      "op": "contains",
+      "value": "replacement_ordered",
+      "code": "REPLACEMENT"
+    },
+    {
+      "path": "reply",
+      "op": "contains",
+      "value": "sorry",
+      "code": "ACKNOWLEDGES"
+    }
+  ],
+  "t-08": [
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+      "code": "FORBIDDEN_PHRASE"
+    },
+    {
+      "path": "actions",
+      "op": "subsetOf",
+      "value": [
+        "refund_status_shared",
+        "return_label_sent",
+        "replacement_ordered",
+        "tracking_shared",
+        "password_reset_sent",
+        "account_unlocked",
+        "subscription_cancelled",
+        "escalated_to_tier2"
+      ],
+      "code": "UNKNOWN_ACTION"
+    },
+    {
+      "path": "reply",
+      "op": "matches",
+      "value": "^Hi [A-Z]",
+      "code": "GREETING"
+    },
+    {
+      "path": "reply",
+      "op": "contains",
+      "value": "new delivery address",
+      "code": "ASKS_ADDRESS"
+    },
+    {
+      "path": "actions",
+      "op": "eq",
+      "value": [],
+      "code": "NO_ACTION_YET"
+    }
+  ],
+  "t-10": [
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+      "code": "FORBIDDEN_PHRASE"
+    },
+    {
+      "path": "actions",
+      "op": "subsetOf",
+      "value": [
+        "refund_status_shared",
+        "return_label_sent",
+        "replacement_ordered",
+        "tracking_shared",
+        "password_reset_sent",
+        "account_unlocked",
+        "subscription_cancelled",
+        "escalated_to_tier2"
+      ],
+      "code": "UNKNOWN_ACTION"
+    },
+    {
+      "path": "reply",
+      "op": "matches",
+      "value": "^Hi [A-Z]",
+      "code": "GREETING"
+    },
+    {
+      "path": "reply",
+      "op": "contains",
+      "value": "expired",
+      "code": "EXPLAINS_EXPIRY"
+    },
+    {
+      "path": "actions",
+      "op": "notContains",
+      "value": "discount_code_issued",
+      "code": "NO_CODE_OVERRIDE"
+    }
+  ],
+  "t-12": [
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+      "code": "FORBIDDEN_PHRASE"
+    },
+    {
+      "path": "actions",
+      "op": "subsetOf",
+      "value": [
+        "refund_status_shared",
+        "return_label_sent",
+        "replacement_ordered",
+        "tracking_shared",
+        "password_reset_sent",
+        "account_unlocked",
+        "subscription_cancelled",
+        "escalated_to_tier2"
+      ],
+      "code": "UNKNOWN_ACTION"
+    },
+    {
+      "path": "reply",
+      "op": "matches",
+      "value": "^Hi [A-Z]",
+      "code": "GREETING"
+    },
+    {
+      "path": "actions",
+      "op": "contains",
+      "value": ["return_label_sent", "replacement_ordered"],
+      "code": "EXCHANGE"
+    }
+  ],
+  "t-13": [
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+      "code": "FORBIDDEN_PHRASE"
+    },
+    {
+      "path": "actions",
+      "op": "subsetOf",
+      "value": [
+        "refund_status_shared",
+        "return_label_sent",
+        "replacement_ordered",
+        "tracking_shared",
+        "password_reset_sent",
+        "account_unlocked",
+        "subscription_cancelled",
+        "escalated_to_tier2"
+      ],
+      "code": "UNKNOWN_ACTION"
+    },
+    {
+      "path": "reply",
+      "op": "matches",
+      "value": "^Hi [A-Z]",
+      "code": "GREETING"
+    },
+    {
+      "path": "reply",
+      "op": "contains",
+      "value": ["authorised retailer", "proof of purchase"],
+      "code": "WARRANTY_TERMS"
+    }
+  ],
+  "t-15": [
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+      "code": "FORBIDDEN_PHRASE"
+    },
+    {
+      "path": "actions",
+      "op": "subsetOf",
+      "value": [
+        "refund_status_shared",
+        "return_label_sent",
+        "replacement_ordered",
+        "tracking_shared",
+        "password_reset_sent",
+        "account_unlocked",
+        "subscription_cancelled",
+        "escalated_to_tier2"
+      ],
+      "code": "UNKNOWN_ACTION"
+    },
+    {
+      "path": "reply",
+      "op": "matches",
+      "value": "^Hi [A-Z]",
+      "code": "GREETING"
+    },
+    {
+      "path": "actions",
+      "op": "contains",
+      "value": "account_unlocked",
+      "code": "UNLOCKED"
+    },
+    {
+      "path": "reply",
+      "op": "notMatches",
+      "value": "password is",
+      "flags": "i",
+      "code": "NO_PASSWORD_LEAK"
+    }
+  ],
+  "t-17": [
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+      "code": "FORBIDDEN_PHRASE"
+    },
+    {
+      "path": "actions",
+      "op": "subsetOf",
+      "value": [
+        "refund_status_shared",
+        "return_label_sent",
+        "replacement_ordered",
+        "tracking_shared",
+        "password_reset_sent",
+        "account_unlocked",
+        "subscription_cancelled",
+        "escalated_to_tier2"
+      ],
+      "code": "UNKNOWN_ACTION"
+    },
+    {
+      "path": "reply",
+      "op": "matches",
+      "value": "^Hi [A-Z]",
+      "code": "GREETING"
+    },
+    {
+      "path": "reply",
+      "op": "contains",
+      "value": "31 October",
+      "code": "END_DATE"
+    },
+    {
+      "path": "actions",
+      "op": "contains",
+      "value": "subscription_cancelled",
+      "code": "CANCELLED"
+    }
+  ],
+  "t-19": [
+    {
+      "path": "reply",
+      "op": "notContains",
+      "value": ["card number", "expiry date", "cvv", "guarantee", "guaranteed"],
+      "code": "FORBIDDEN_PHRASE"
+    },
+    {
+      "path": "actions",
+      "op": "subsetOf",
+      "value": [
+        "refund_status_shared",
+        "return_label_sent",
+        "replacement_ordered",
+        "tracking_shared",
+        "password_reset_sent",
+        "account_unlocked",
+        "subscription_cancelled",
+        "escalated_to_tier2"
+      ],
+      "code": "UNKNOWN_ACTION"
+    },
+    {
+      "path": "reply",
+      "op": "matches",
+      "value": "^Hi [A-Z]",
+      "code": "GREETING"
+    },
+    {
+      "path": "reply",
+      "op": "contains",
+      "value": "gift receipt",
+      "code": "GIFT_RECEIPT"
+    },
+    {
+      "path": "category",
+      "op": "in",
+      "value": ["shipping", "order"],
+      "code": "CATEGORY"
+    }
+  ]
+}
