@@ -1,0 +1,53 @@
+# Publishes the Python package to PyPI when a python-v* tag is pushed, with trusted
+# publishing (no token): PyPI must list this repository, this workflow file and the
+# "pypi" environment as a trusted publisher. See docs/releasing.md.
+name: Release (Python)
+
+on:
+  push:
+    tags: ["python-v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Check the tag matches pyproject.toml
+        run: |
+          version=$(uv run --no-project python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          test "python-v${version}" = "${GITHUB_REF_NAME}"
+      - run: uv sync --all-extras --locked
+      - run: uv run ruff check
+      - run: uv run mypy --strict src tests
+      - run: uv run pytest -q
+      - run: uv build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: python/dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/evalroom/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

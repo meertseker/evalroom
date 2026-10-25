@@ -12,9 +12,10 @@ Include the version, a description, and a minimal reproduction if you have one. 
 
 ## Scope
 
-evalroom has no runtime dependencies and makes no network calls. The relevant surface is:
+evalroom's core has no runtime dependencies and makes no network calls (the optional Python extras install inspect_ai and pandas, which evalroom only uses to read logs and build data frames). The relevant surface is:
 
 - the JSONL store and CLI, which read and write files at paths you give them (run ids are restricted to safe file names);
+- Inspect logs read by `judge-check`, `gate` and `compare`, through inspect_ai's own reader;
 - regular expressions in `matches` / `notMatches` rules, which are compiled from your rule files. Treat rule files like code: a malicious pattern can cause catastrophic backtracking.
 
 Review data often contains customer text. evalroom never sends it anywhere, but your stores and audit files hold it; protect them accordingly.

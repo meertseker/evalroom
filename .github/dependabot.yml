@@ -14,6 +14,13 @@ updates:
         versions: [">=7"]
       - dependency-name: tsup
         update-types: ["version-update:semver-major"]
+  - package-ecosystem: uv
+    directory: /python
+    schedule:
+      interval: weekly
+    groups:
+      python-dependencies:
+        patterns: ["*"]
   - package-ecosystem: github-actions
     directory: /
     schedule:

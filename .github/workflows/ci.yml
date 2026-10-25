@@ -9,8 +9,8 @@ permissions:
   contents: read
 
 jobs:
-  check:
-    name: Node ${{ matrix.node }}
+  typescript:
+    name: TypeScript (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -29,8 +29,55 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
-      - run: npm test
+      - name: Tests (including the conformance vectors)
+        run: npm test
       - run: npm run build
       - run: npm run example
       - name: CLI smoke test on the built binary
         run: node dist/cli/index.js agreement ../conformance/data/reviews.jsonl --rubric ../conformance/data/rubric.json
+
+  python:
+    name: Python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python }}
+          enable-cache: true
+          cache-dependency-glob: python/uv.lock
+      - run: uv sync --all-extras --locked
+      - run: uv run ruff check
+      - run: uv run ruff format --check
+      # inspect_ai needs Python 3.11+, so the extension cannot be type-checked on 3.10.
+      - if: matrix.python != '3.10'
+        run: uv run mypy --strict src tests
+      - name: Tests (including the conformance vectors and the Inspect fixture)
+        run: uv run pytest -q
+      - run: uv build
+      - name: CLI smoke test on the built wheel
+        run: |
+          uv venv "$RUNNER_TEMP/smoke" --python "${{ matrix.python }}"
+          uv pip install --python "$RUNNER_TEMP/smoke" dist/*.whl
+          "$RUNNER_TEMP/smoke/bin/evalroom" --version
+          "$RUNNER_TEMP/smoke/bin/evalroom" agreement ../conformance/data/reviews.jsonl --rubric ../conformance/data/rubric.json
+          set +e
+          "$RUNNER_TEMP/smoke/bin/evalroom" gate ../conformance/data/run-candidate.jsonl
+          test $? -eq 2 || exit 1
+          "$RUNNER_TEMP/smoke/bin/evalroom" judge-check examples/inspect_judge/judge_fixture.eval
+          test $? -eq 64 || exit 1
+      - name: CLI smoke test with the Inspect extra
+        if: matrix.python != '3.10'
+        run: |
+          wheel=$(ls dist/*.whl)
+          uv pip install --python "$RUNNER_TEMP/smoke" "${wheel}[inspect]"
+          set +e
+          "$RUNNER_TEMP/smoke/bin/evalroom" judge-check examples/inspect_judge/judge_fixture.eval --scorer model_graded_qa
+          test $? -eq 2 || exit 1

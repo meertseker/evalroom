@@ -20,8 +20,17 @@ body:
     id: repro
     attributes:
       label: Minimal reproduction
-      description: The smallest reviews / run / rubric data that shows the problem.
-      render: ts
+      description: The smallest reviews / run / rubric data (or Inspect log) that shows the problem.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      options:
+        - Python (PyPI)
+        - TypeScript (npm)
+        - Both
+    validations:
+      required: true
   - type: input
     id: version
     attributes:
@@ -32,5 +41,5 @@ body:
   - type: input
     id: node
     attributes:
-      label: Node version and OS
-      placeholder: "Node 22.11, Ubuntu 24.04"
+      label: Runtime and OS
+      placeholder: "Python 3.12 + inspect_ai 0.3.285, or Node 22.11; Ubuntu 24.04"
